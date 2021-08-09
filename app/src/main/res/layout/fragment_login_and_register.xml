@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="viewModel"
+            type="com.example.senla_tz.ui.fragment.login_and_register.LoginAndRegisterViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        tools:context=".ui.fragment.login_and_register.LoginAndRegisterFragment">
+
+        <EditText
+            android:id="@+id/edEmail"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:backgroundTint="@color/purple_700"
+            android:inputType="textEmailAddress"
+            android:hint="@string/e_mail"/>
+
+        <EditText
+            android:id="@+id/edPassword"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:inputType="textPassword"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@color/purple_700"
+            android:layout_marginBottom="10dp"
+            android:hint="@string/password"/>
+
+        <EditText
+            android:id="@+id/edConfirmPassword"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            app:isLoginState="@{viewModel.isLoginState()}"
+            android:backgroundTint="@color/purple_700"
+            android:inputType="textPassword"
+            android:hint="@string/confirm_password"/>
+
+        <EditText
+            android:id="@+id/edFistName"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            app:isLoginState="@{viewModel.isLoginState()}"
+            android:backgroundTint="@color/purple_700"
+            android:inputType="textPersonName"
+            android:hint="@string/first_name"/>
+
+        <EditText
+            android:id="@+id/edLastName"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            app:isLoginState="@{viewModel.isLoginState()}"
+            android:backgroundTint="@color/purple_700"
+            android:inputType="textPersonName"
+            android:hint="@string/last_name"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnChangeStateLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/purple_500"
+            android:background="@android:color/transparent"
+            tools:text="@string/u_register"
+            app:textSingButton="@{viewModel.isLoginState()}"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnLogin"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:text="@string/continue_login"
+            android:textAllCaps="false"
+            android:textColor="@color/textcolor_button_purple"
+            android:background="@drawable/button_purple"
+            android:layout_marginTop="10dp"/>
+
+    </LinearLayout>
+</layout>

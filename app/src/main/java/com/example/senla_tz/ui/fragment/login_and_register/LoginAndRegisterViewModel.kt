@@ -3,7 +3,6 @@ package com.example.senla_tz.ui.fragment.login_and_register
 import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.senla_tz.model.Token
 import com.example.senla_tz.repository.LoginAndRegisterRepository
 import com.example.senla_tz.repository.network.data.LoginRequest
 import com.example.senla_tz.repository.network.data.RegisterRequest
@@ -17,10 +16,10 @@ class LoginAndRegisterViewModel @Inject constructor(
     private val repository: LoginAndRegisterRepository
     ): ViewModel() {
 
-    val authorizationFlow: SharedFlow<Token> by lazy { repository.authorizationFlow }
+    val authorizationFlow: SharedFlow<String> by lazy { repository.authorizationFlow }
     val authorizationFailFlow: SharedFlow<String> by lazy { repository.authorizationFailFlow }
 
-    val isLoginState by lazy { ObservableBoolean() }
+    val isLoginState by lazy { ObservableBoolean(true) }
 
     fun register(email: String, password: String, fistName: String, lastName: String){
         viewModelScope.launch {

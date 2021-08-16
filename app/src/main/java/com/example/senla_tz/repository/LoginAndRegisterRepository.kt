@@ -1,29 +1,32 @@
 package com.example.senla_tz.repository
 
-import com.example.senla_tz.model.Token
+import android.util.Log
+import com.example.senla_tz.entify.Token
 import com.example.senla_tz.repository.network.data.LoginRequest
 import com.example.senla_tz.repository.network.data.RegisterRequest
 import com.example.senla_tz.repository.network.LoginAndRegisterApi
 import com.example.senla_tz.repository.pref.TokenPref
+import com.example.senla_tz.util.Constant
 import kotlinx.coroutines.flow.MutableSharedFlow
 import javax.inject.Inject
 
+private val TAG = LoginAndRegisterRepository::class.java.simpleName
 class LoginAndRegisterRepository @Inject constructor(
     private val service: LoginAndRegisterApi,
     private val tokenPref: TokenPref
 ) {
 
-    val authorizationFlow = MutableSharedFlow<Token>()
+    val authorizationFlow = MutableSharedFlow<String>()
     val authorizationFailFlow = MutableSharedFlow<String>()
 
 
     suspend fun register(request: RegisterRequest) {
         try {
-            val res = service.register(request = request) ?: throw Exception("Response null")
+            val res = service.register(request = request)
 
-            if (res.code == null){
+            if (res.status == Constant.StatusResponse.OK){
                 Token(text = res.token).also {
-                    authorizationFlow.emit(it)
+                    authorizationFlow.emit("Добро пожаловать ${request.firstName}")
                     tokenPref.saveToken(it)
                 }
             }else{
@@ -31,11 +34,27 @@ class LoginAndRegisterRepository @Inject constructor(
             }
 
         } catch (exception: Exception) {
-            authorizationFailFlow.emit(exception.message ?: "Error")
+            Log.e(TAG,exception.message?: exception.toString())
+            authorizationFailFlow.emit(Constant.errorFromService)
         }
     }
 
     suspend fun login(request: LoginRequest){
-        //service.login(request = request)
+        try {
+            val res = service.login(request = request)
+
+            if (res.status == Constant.StatusResponse.OK){
+                Token(text = res.token).also {
+                    authorizationFlow.emit("Добро пожаловать ${res.firstName}")
+                    tokenPref.saveToken(it)
+                }
+            }else{
+                authorizationFailFlow.emit(res.code!!.text)
+            }
+
+        } catch (exception: Exception) {
+            Log.e(TAG,exception.message?: exception.toString())
+            authorizationFailFlow.emit(Constant.errorFromService)
+        }
     }
 }

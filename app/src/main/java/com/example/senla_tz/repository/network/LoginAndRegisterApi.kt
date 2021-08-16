@@ -12,14 +12,8 @@ import retrofit2.http.POST
 interface LoginAndRegisterApi {
 
     @POST(Constant.ENDPOINT_REGISTER)
-    @Headers(
-        "Content-Type: application/json",
-    )
-    suspend fun register(@Body request: RegisterRequest): RegisterResponse?
+    suspend fun register(@Body request: RegisterRequest): RegisterResponse
 
     @POST(Constant.ENDPOINT_LOGIN)
-    @Headers(
-        "Content-Type: application/json",
-    )
-    suspend fun login(@Body request: LoginRequest): LoginResponse?
+    suspend fun login(@Body request: LoginRequest): LoginResponse
 }

@@ -2,6 +2,7 @@ package com.example.senla_tz.repository
 
 import android.util.Log
 import com.example.senla_tz.entify.Track
+import com.example.senla_tz.repository.database.TrackDao
 import com.example.senla_tz.repository.network.TracksApi
 import com.example.senla_tz.repository.pref.TokenPref
 import com.example.senla_tz.util.Constant
@@ -9,8 +10,9 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import java.lang.Exception
 import javax.inject.Inject
 
-private val TAG = MainFragmentRepository::class.simpleName
-class MainFragmentRepository @Inject constructor(
+private val TAG = TracksRepository::class.simpleName
+class TracksRepository @Inject constructor(
+    private var dao: TrackDao,
     private var service: TracksApi,
     private var pref: TokenPref
 ) {

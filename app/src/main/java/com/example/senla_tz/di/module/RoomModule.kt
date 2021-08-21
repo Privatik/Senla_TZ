@@ -2,36 +2,40 @@ package com.example.senla_tz.di.module
 
 import android.content.Context
 import androidx.room.Room
+import com.example.senla_tz.repository.database.ReminderDao
+import com.example.senla_tz.repository.database.TrackDao
 import com.example.senla_tz.repository.database.TrackDataBase
+import com.example.senla_tz.util.Constant
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.qualifiers.ActivityContext
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ActivityScoped
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
-private const val NAME = "TRACK_DATABASE"
 @Module
-@InstallIn(ActivityComponent::class)
+@InstallIn(SingletonComponent::class)
 object RoomModule {
 
-    @ActivityScoped
+    @Singleton
     @Provides
     fun provideDataBase(
-       @ActivityContext context: Context
+       @ApplicationContext context: Context
     ): TrackDataBase =
         Room.databaseBuilder(
             context,
             TrackDataBase::class.java,
-            NAME
+            Constant.BASE_NAME
         ).allowMainThreadQueries()
             .build()
 
-    @ActivityScoped
     @Provides
-    fun provideTrackDao(database: TrackDataBase) = database.trackDao()
+    fun provideTrackDao(database: TrackDataBase): TrackDao = database.trackDao()
 
-    @ActivityScoped
     @Provides
-    fun provideReminderDao(database: TrackDataBase) = database.reminderDao()
+    fun provideReminderDao(database: TrackDataBase): ReminderDao = database.reminderDao()
 }

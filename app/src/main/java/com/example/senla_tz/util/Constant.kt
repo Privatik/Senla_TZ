@@ -12,6 +12,8 @@ object Constant {
 
     const val errorFromService = "Что-то пошло не так.."
 
+    const val BASE_NAME = "TRACK_DATABASE"
+
     enum class StatusResponse{
         @SerializedName("ok")
         OK,

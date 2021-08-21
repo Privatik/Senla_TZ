@@ -8,10 +8,10 @@ import com.example.senla_tz.entify.Track
 interface ReminderDao {
 
     @Query("SELECT * FROM Reminder")
-    suspend fun getAllReminder(): MutableList<Reminder>
+    suspend fun getAllReminder(): List<Reminder>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun saveReminder(reminder: Reminder): Reminder
+    suspend fun saveReminder(reminder: Reminder): Long
 
     @Query("DELETE FROM Reminder WHERE id = :id")
     suspend fun deleteReminderById(id: Int)

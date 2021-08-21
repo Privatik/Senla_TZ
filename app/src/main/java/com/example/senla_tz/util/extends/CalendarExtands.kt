@@ -31,3 +31,8 @@ fun Calendar.getRussianNameMouth()=
         11 -> "Декабря"
         else -> "Не определен"
     }
+
+fun Calendar.addOneMinute(){
+    add(Calendar.MINUTE, 1)
+}
+

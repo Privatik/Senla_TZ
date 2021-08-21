@@ -21,4 +21,6 @@
     <string name="edit">Изменить</string>
     <string name="run_text">Пробежка</string>
     <string name="title_activity_run">RunActivity</string>
+    <string name="start">Старт</string>
+    <string name="finish">Финиш</string>
 </resources>

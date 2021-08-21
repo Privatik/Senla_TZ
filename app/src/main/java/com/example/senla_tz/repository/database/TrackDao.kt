@@ -12,10 +12,10 @@ interface TrackDao {
     @Query("SELECT * FROM Track")
     suspend fun getAllTracks(): List<Track>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun saveTrack(track: Track)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     @JvmSuppressWildcards
     suspend fun saveTracks(tracks: List<Track>)
 }

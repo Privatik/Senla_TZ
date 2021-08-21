@@ -14,6 +14,8 @@ import com.example.senla_tz.R
 import com.example.senla_tz.databinding.FragmentLoginAndRegisterBinding
 import com.example.senla_tz.ui.activity.main.MainActivity
 import com.example.senla_tz.ui.dialog.LoadDialog
+import com.example.senla_tz.util.extends.closeLoadDialog
+import com.example.senla_tz.util.extends.openLoadDialog
 import com.example.senla_tz.util.extends.showSnackBar
 import com.example.senla_tz.util.extends.showToast
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,8 +28,6 @@ class LoginAndRegisterFragment : Fragment(R.layout.fragment_login_and_register) 
 
     private val vm: LoginAndRegisterViewModel by viewModels()
     private var binding: FragmentLoginAndRegisterBinding? = null
-
-    private var dialogLoad: DialogFragment? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -78,7 +78,7 @@ class LoginAndRegisterFragment : Fragment(R.layout.fragment_login_and_register) 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
                 vm.authorizationFlow.collect {
-                    closeLoadDilaog()
+                    closeLoadDialog()
 
                     showToast(it,short = true)
                     startActivity(Intent(requireActivity(), MainActivity::class.java))
@@ -90,7 +90,7 @@ class LoginAndRegisterFragment : Fragment(R.layout.fragment_login_and_register) 
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
                 vm.authorizationFailFlow.collect {
-                    closeLoadDilaog()
+                    closeLoadDialog()
 
                     showSnackBar(it)
                 }
@@ -98,21 +98,7 @@ class LoginAndRegisterFragment : Fragment(R.layout.fragment_login_and_register) 
         }
     }
 
-    fun openLoadDialog(){
-        dialogLoad = LoadDialog().also {
-            it.isCancelable = false
-            it.show(childFragmentManager.beginTransaction(), "load")
-        }
-    }
-
-    fun closeLoadDilaog(){
-        dialogLoad?.dismiss()
-        dialogLoad = null
-    }
-
     override fun onDestroyView() {
-        closeLoadDilaog()
-
         binding = null
         super.onDestroyView()
     }

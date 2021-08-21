@@ -16,22 +16,26 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.senla_tz.R
+import com.example.senla_tz.broadcast.ReminderBroadcast
 import com.example.senla_tz.databinding.FragmentReminderBinding
 import com.example.senla_tz.entify.Reminder
 import com.example.senla_tz.service.ReminderNotificationService
 import com.example.senla_tz.ui.activity.main.IMainNavController
 import com.example.senla_tz.ui.dialog.ReminderDateDialog
 import com.example.senla_tz.util.resourse.RecyclerViewDecoration
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.*
 
 
 private val TAG = ReminderFragment::class.simpleName
+@AndroidEntryPoint
 class ReminderFragment : Fragment(R.layout.fragment_reminder) {
 
     private var mainNavController: IMainNavController? = null
     private var binding: FragmentReminderBinding? = null
+    private var adapterReminder: AdapterReminder? = null
 
     private val vm: ReminderViewModel by viewModels()
 
@@ -51,8 +55,10 @@ class ReminderFragment : Fragment(R.layout.fragment_reminder) {
         binding?.apply {
             mainNavController?.addNavController(toolbar = toolbar)
 
-            recReminder.addItemDecoration(RecyclerViewDecoration(ContextCompat.getDrawable(requireContext(), R.drawable.decoration_white)!!))
+            //recReminder.addItemDecoration(RecyclerViewDecoration(ContextCompat.getDrawable(requireContext(), R.drawable.decoration_white)!!))
         }
+
+        vm.getAllReminder()
 
         initListener()
         initObserver()
@@ -71,9 +77,20 @@ class ReminderFragment : Fragment(R.layout.fragment_reminder) {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
                 vm.remindersFlow.collect {
-                    binding?.recReminder?.adapter = AdapterReminder(it){ reminder ->
+                    adapterReminder = AdapterReminder(it){ reminder ->
                         showDialogReminder(false, reminder.id)
                     }
+
+                    binding?.recReminder?.adapter = adapterReminder!!
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                vm.reminderFlow.collect {
+                    addReminder(it.date, it.id)
+                    adapterReminder?.addReminder(it)
                 }
             }
         }
@@ -83,21 +100,16 @@ class ReminderFragment : Fragment(R.layout.fragment_reminder) {
         val dialog = ReminderDateDialog.newInstance(isFirstStart)
         dialog.callback = object : ReminderDateDialog.Callback{
             override fun createReminder(calendar: Calendar) {
-                if (id == null) {
-                    addReminder(
-                        calendar,
-                        vm.saveReminder(
-                            Reminder(
-                                id = 0,
-                                date = calendar
-                            )
-                        ).id)
-                }else {
-                    addReminder(calendar, id)
-                    vm.saveReminder(Reminder(
-                        id = id,
-                        date = calendar
-                    ))
+                lifecycleScope.launch {
+                    if (id == null) vm.saveReminder(Reminder(id = 0, date = calendar))
+                    else {
+                        val reminder = Reminder(
+                            id = id,
+                            date = calendar
+                        )
+                        adapterReminder?.updateReminder(reminder)
+                        vm.updateReminder(reminder)
+                    }
                 }
             }
 
@@ -105,6 +117,7 @@ class ReminderFragment : Fragment(R.layout.fragment_reminder) {
                 id?.let {
                     deleteReminder(it)
                     vm.deleteReminderById(it)
+                    adapterReminder?.removeReminder(it)
                 }
             }
 
@@ -115,10 +128,10 @@ class ReminderFragment : Fragment(R.layout.fragment_reminder) {
 
     @SuppressLint("UnspecifiedImmutableFlag")
     private fun addReminder(calendar: Calendar, id: Int){
-        val intent = PendingIntent.getService(
+        val intent = PendingIntent.getBroadcast(
             requireContext().applicationContext,
             id,
-            Intent(requireActivity(), ReminderNotificationService::class.java),
+            Intent(requireActivity(), ReminderBroadcast::class.java),
             0
         )
 
@@ -141,10 +154,10 @@ class ReminderFragment : Fragment(R.layout.fragment_reminder) {
     }
 
     private fun deleteReminder(id: Int){
-        val intent = PendingIntent.getService(
+        val intent = PendingIntent.getBroadcast(
             requireContext().applicationContext,
             id,
-            Intent(requireActivity(), ReminderNotificationService::class.java),
+            Intent(requireActivity(), ReminderBroadcast::class.java),
             0
         )
 

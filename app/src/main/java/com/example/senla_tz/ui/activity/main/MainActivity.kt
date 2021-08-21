@@ -10,11 +10,12 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.senla_tz.R
+import com.example.senla_tz.base.BaseActivity
 import com.example.senla_tz.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), IMainNavController {
+class MainActivity : BaseActivity(), IMainNavController {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private var binding: ActivityMainBinding? = null

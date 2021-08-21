@@ -2,6 +2,7 @@ package com.example.senla_tz.ui.fragment.main
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
@@ -11,6 +12,7 @@ import com.example.senla_tz.R
 import com.example.senla_tz.databinding.FragmentMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 import com.example.senla_tz.ui.activity.main.IMainNavController
+import com.example.senla_tz.ui.activity.run.RunActivity
 import com.example.senla_tz.util.resourse.RecyclerViewDecoration
 
 
@@ -39,7 +41,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             mainNavController?.addNavController(toolbar = toolbar)
 
             viewModel = vm
-            recListTracks.addItemDecoration(RecyclerViewDecoration(ContextCompat.getDrawable(requireContext(), R.drawable.decoration_white)!!))
+            //recListTracks.addItemDecoration(RecyclerViewDecoration(ContextCompat.getDrawable(requireContext(), R.drawable.decoration_white)!!))
             recListTracks.adapter = AdapterTracks()
         }
 
@@ -50,7 +52,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun initListener() {
-
+       binding?.apply {
+           fabRunScreen.setOnClickListener {
+               startActivity(Intent(requireActivity(), RunActivity::class.java))
+           }
+       }
     }
 
     private fun initObserver() {

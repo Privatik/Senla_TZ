@@ -8,6 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.example.senla_tz.R
 import com.example.senla_tz.base.BaseActivity
+import com.example.senla_tz.ui.activity.run.RunActivity
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.material.snackbar.Snackbar
 
 fun Fragment.showSnackBar(txt: String){

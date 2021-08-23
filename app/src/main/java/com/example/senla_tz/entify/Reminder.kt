@@ -6,6 +6,7 @@ import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.example.senla_tz.repository.database.CalendarTypeConverter
 import com.example.senla_tz.util.extends.getRussianNameMouth
+import com.example.senla_tz.util.extends.normalView
 import java.util.*
 
 @Entity
@@ -16,6 +17,7 @@ data class Reminder(
     var date: Calendar
 ){
     fun getDateToString(): String =
-        "${date.get(Calendar.DAY_OF_MONTH)} ${date.getRussianNameMouth()}" +
-                " ${date.get(Calendar.HOUR_OF_DAY)}:${date.get(Calendar.MINUTE)}"
+        "${date.get(Calendar.DAY_OF_MONTH).normalView()} ${date.getRussianNameMouth()}" +
+                " ${date.get(Calendar.HOUR_OF_DAY).normalView()}" +
+                ":${date.get(Calendar.MINUTE).normalView()}"
 }

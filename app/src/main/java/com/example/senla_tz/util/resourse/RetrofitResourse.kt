@@ -12,3 +12,16 @@ enum class FailAuthStatus(val text: String){
     @SerializedName("EMAIL_ALREADY_EXISTS")
     EMAIL_ALREADY_EXISTS("Пользователь с таким email уже был зарегистрирован."),
 }
+
+enum class FailUserStatus(val text: String){
+    @SerializedName("INVALID_ID")
+    INVALID_ID("Неправильный ID трека"),
+    @SerializedName("INVALID_TOKEN")
+    INVALID_TOKEN("Неверный авторизационный токен"),
+    @SerializedName("INVALID_FIELDS")
+    INVALID_FIELDS("Неверные значения"),
+    @SerializedName("NO_POINTS")
+    NO_POINTS("Нет поля points"),
+    @SerializedName("INVALID_POINTS")
+    INVALID_POINTS("какая-то одна (из всех) точек неправильная")
+}

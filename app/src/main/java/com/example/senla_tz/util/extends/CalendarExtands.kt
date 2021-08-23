@@ -11,7 +11,8 @@ fun Calendar.changeDate(
     add(Calendar.MONTH, if (month != 0) month - get(Calendar.MONTH) else 1)
     add(Calendar.DAY_OF_MONTH, day - get(Calendar.DAY_OF_MONTH))
     add(Calendar.HOUR_OF_DAY, hour - get(Calendar.HOUR_OF_DAY))
-    add(Calendar.MINUTE, (minute - get(Calendar.MINUTE))-1)
+    add(Calendar.MINUTE, (minute - get(Calendar.MINUTE)))
+    set(Calendar.SECOND, 0)
 
 }
 
@@ -31,8 +32,4 @@ fun Calendar.getRussianNameMouth()=
         11 -> "Декабря"
         else -> "Не определен"
     }
-
-fun Calendar.addOneMinute(){
-    add(Calendar.MINUTE, 1)
-}
 

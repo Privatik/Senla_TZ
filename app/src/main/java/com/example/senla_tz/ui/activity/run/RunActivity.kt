@@ -1,6 +1,7 @@
 package com.example.senla_tz.ui.activity.run
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
@@ -17,19 +18,20 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.senla_tz.base.BaseActivity
 import com.example.senla_tz.databinding.ActivityRunBinding
+import com.example.senla_tz.util.Constant.ME
+import com.example.senla_tz.util.Constant.ZOOM_CAMERA
+import com.example.senla_tz.util.extends.distance
 import com.example.senla_tz.util.extends.flipDownAnimation
+import com.example.senla_tz.util.extends.normalView
 import com.example.senla_tz.util.extends.setVisible
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import java.util.*
 
 
@@ -44,10 +46,6 @@ class RunActivity : BaseActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
 
     private var isRunState = false
-
-    private val managerLocation: LocationManager by lazy {
-        getSystemService(LOCATION_SERVICE) as LocationManager
-    }
 
     private val line : PolylineOptions by lazy {
         PolylineOptions().apply {
@@ -98,7 +96,7 @@ class RunActivity : BaseActivity(), OnMapReadyCallback {
             }
         }
 
-        if (!managerLocation.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+        if (!(getSystemService(LOCATION_SERVICE) as LocationManager).isProviderEnabled(LocationManager.GPS_PROVIDER)){
             activityResultLauncherActivity.launch(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
         }else{
             mapFragment.getMapAsync(this)
@@ -106,29 +104,69 @@ class RunActivity : BaseActivity(), OnMapReadyCallback {
 
         initListener()
         initObserver()
-
-        vm.loadSetup(this)
     }
 
     private fun initListener() {
+        var timer: Job? = null
+
         binding?.apply {
             btnStartOrFinish.setOnClickListener {
                 isRunState = !isRunState
                 val text = if (!isRunState) getString(R.string.start) else getString(R.string.finish)
 
                 btnStartOrFinish.flipDownAnimation(text) {
-                    tvTimer.setVisible(isRunState)
+                    //toolbarRunContainer.setVisible(isRunState)
                 }
 
+                timer = if (isRunState){
+                    startTimer()
+                } else {
+                    timer?.let { stopTimer(it) }
+                    null
+                }
                 updateListenerLocation()
             }
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun timerView(milliSeconds: Long){
+
+        val minutes = milliSeconds / 60000
+        val seconds = milliSeconds - minutes * 60000
+        binding?.tvTimer?.text = "" +
+                minutes.normalView() +
+                ":${seconds.normalView()}" +
+                ":${milliSeconds.toString().takeLast(3).dropLast(1)}"
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun startTimer(): Job =
+        CoroutineScope(Dispatchers.Default).launch {
+            var milliSeconds = 0L
+
+            // 1000  - 00:01:00
+            // 1100  - 00:01:10
+
+            // 67000 - 01:07:00
+            while (true) {
+                delay(10)
+                milliSeconds += 10
+
+                timerView(milliSeconds)
+            }
+        }
+
+    private fun stopTimer(job: Job)  {
+        lifecycleScope.launch {
+            job.cancelAndJoin()
         }
     }
 
     private fun updateListenerLocation(){
         if (isRunState){
             currentMarker?.also {
-                line.add(it.position)
+                vm.updateState(it.position)
                 it.remove()
             }
         } else {
@@ -136,43 +174,63 @@ class RunActivity : BaseActivity(), OnMapReadyCallback {
                 mMap.addMarker(MarkerOptions().position(last()))?.let {
                     currentMarker = it
                 }
-                clear()
+                vm.updateState()
             }
         }
     }
 
     private fun initObserver() {
         lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED){
-                vm.locationFlow.collect{
-                    Log.e(TAG,"$it")
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED){
+                vm.locationFlow.collect{ listLatLng ->
+                    Log.e(TAG,"Draw on activity $listLatLng")
 
                     if (isLoadState()) closeLoadDialog()
-                    val latLng = LatLng(it.latitude, it.longitude)
-                    if (isRunState) line.add(latLng)
 
-                    if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-                        if (isRunState) {
-                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17.0f))
-                            mMap.addPolyline(line)
-                        } else {
+                    if (isRunState) {
+                        line.points.clear()
+                        line.addAll(listLatLng)
+                        updateStateRunning(line.points.distance())
+
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(listLatLng.last(), ZOOM_CAMERA))
+                        mMap.addPolyline(line)
+                    } else {
+                        listLatLng.last().also { latLng ->
                             if (currentMarker == null) {
-                                mMap.addMarker(MarkerOptions().position(latLng))?.let { marker ->
+                                mMap.addMarker(MarkerOptions()
+                                    .title(ME)
+                                    .position(latLng)
+                                    //.icon(BitmapDescriptorFactory.fromResource(R.drawable.point_me))
+                                )?.let { marker ->
                                     currentMarker = marker
                                 }
-                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17.0f))
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, ZOOM_CAMERA))
                             } else {
                                 currentMarker?.position = latLng
-                                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17.0f))
+                                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, ZOOM_CAMERA))
                             }
                         }
                     }
+
                 }
             }
         }
     }
 
+    @SuppressLint("SetTextI18n")
+    private fun updateStateRunning(distance: Int){
+        binding?.apply {
+            tvDistance.text = "$distance м"
+        }
+    }
+
+    override fun onBackPressed() {
+        vm.stopTrackLocation(this)
+        super.onBackPressed()
+    }
+
     override fun onDestroy() {
+        binding = null
         vm.stopTrackLocation(this)
         super.onDestroy()
     }

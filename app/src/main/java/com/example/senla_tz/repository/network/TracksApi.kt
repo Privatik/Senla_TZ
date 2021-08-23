@@ -11,4 +11,6 @@ interface TracksApi {
     @FormUrlEncoded
     @POST(Constant.ENDPOINT_TRACKS)
     suspend fun getAllTracks(@Field("token") token: String): TracksResponse
+
+    suspend fun saveTrack()
 }

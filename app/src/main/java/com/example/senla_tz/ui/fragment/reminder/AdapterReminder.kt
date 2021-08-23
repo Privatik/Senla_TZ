@@ -3,10 +3,8 @@ package com.example.senla_tz.ui.fragment.reminder
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.senla_tz.R
 import com.example.senla_tz.databinding.ItemReminderBinding
 import com.example.senla_tz.entify.Reminder
-import com.example.senla_tz.util.extends.addOneMinute
 
 class AdapterReminder(private val list: MutableList<Reminder>, inline val onCLick: (Reminder) -> Unit):
     RecyclerView.Adapter<AdapterReminder.ReminderViewHolder>() {
@@ -18,10 +16,7 @@ class AdapterReminder(private val list: MutableList<Reminder>, inline val onCLic
 
     override fun onBindViewHolder(holder: ReminderViewHolder, position: Int) {
         holder.binding.apply {
-            model = list[position].let {
-                it.date.addOneMinute()
-                it
-            }
+            model = list[position]
 
             imgBtnEditReminder.setOnClickListener {
                 onCLick(list[position])

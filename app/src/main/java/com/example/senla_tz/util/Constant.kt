@@ -1,5 +1,8 @@
 package com.example.senla_tz.util
 
+import androidx.core.content.ContextCompat
+import com.example.senla_tz.R
+import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.gson.annotations.SerializedName
 
 object Constant {
@@ -13,6 +16,10 @@ object Constant {
     const val errorFromService = "Что-то пошло не так.."
 
     const val BASE_NAME = "TRACK_DATABASE"
+
+    const val ME = "Я"
+
+    const val ZOOM_CAMERA = 17f
 
     enum class StatusResponse{
         @SerializedName("ok")

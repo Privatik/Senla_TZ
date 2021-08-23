@@ -11,5 +11,5 @@ data class Track(
     var idServer: Long,
     var beginsAt: Long,
     var time: Long,
-    var distance: Long
+    var distance: Int
 )

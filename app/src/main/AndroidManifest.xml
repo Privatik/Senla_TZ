@@ -78,16 +78,15 @@
             android:enabled="true"
             android:exported="false" />
 
-        <service
-            android:name=".service.RunService"
-            android:enabled="true"
-            android:exported="false" />
-
         <provider
-            android:name="androidx.startup.InitializationProvider"
-            android:authorities="${applicationId}.androidx-startup"
-            tools:node="remove">
-        </provider>
+            android:name="androidx.work.impl.WorkManagerInitializer"
+            android:authorities="${applicationId}.workmanager-init"
+            tools:node="remove" />
+
+        <service
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            android:foregroundServiceType="location"
+            tools:node="merge" />
 
     </application>
 

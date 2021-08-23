@@ -25,9 +25,20 @@ class TracksRepository @Inject constructor(
             val res = service.getAllTracks(pref.getToken().text)
 
             if (res.status == Constant.StatusResponse.OK) {
+                val list = res.tracks.map {
+                    Track(
+                        id = 0,
+                        idServer = it.id,
+                        beginsAt = it.beginsAt,
+                        time = it.time,
+                        distance = it.distance
+                    )
+                }
 
+                dao.saveTracks(list)
+                tracksFlow.emit(list)
             } else {
-
+                tracksFailFlow.emit(res.code!!.text)
             }
 
         }catch (e: Exception){

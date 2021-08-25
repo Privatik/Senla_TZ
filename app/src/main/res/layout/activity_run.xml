@@ -14,15 +14,24 @@
             android:layout_height="match_parent"
             tools:context=".ui.activity.run.RunActivity" />
 
-        <LinearLayout
+        <View
             android:id="@+id/toolbarRunContainer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:translationZ="3dp"
+            android:layout_height="70dp"
+            android:visibility="gone"
             android:background="@color/purple_700"
-            android:padding="10dp"
-            map:layout_constraintTop_toTopOf="parent">
+            map:layout_constraintTop_toTopOf="parent"
+            />
+
+<!--        <LinearLayout-->
+<!--            android:id="@+id/toolbarRunContainer"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="horizontal"-->
+<!--            android:translationZ="3dp"-->
+<!--            android:background="@color/purple_700"-->
+<!--            android:padding="10dp"-->
+<!--            map:layout_constraintTop_toTopOf="parent">-->
 
             <TextView
                 android:id="@+id/tvTimer"
@@ -34,8 +43,8 @@
                 android:layout_marginStart="10dp"
                 android:textColor="@color/white"
                 android:translationZ="1dp"
-                android:visibility="gone"
-                tools:visibility="visible" />
+                map:layout_constraintBottom_toBottomOf="@id/testtoolbar"
+                map:layout_constraintStart_toStartOf="parent"/>
 
             <TextView
                 android:id="@+id/tvDistance"
@@ -44,9 +53,12 @@
                 android:textColor="@color/white"
                 android:layout_gravity="bottom"
                 android:textSize="25sp"
-                tools:text="20 000 m"/>
+                tools:text="20 000 m"
+                android:layout_marginBottom="5dp"
+                map:layout_constraintBottom_toBottomOf="@id/testtoolbar"
+                map:layout_constraintEnd_toEndOf="parent"/>
 
-        </LinearLayout>
+<!--        </LinearLayout>-->
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnStartOrFinish"

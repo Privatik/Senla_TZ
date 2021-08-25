@@ -24,8 +24,8 @@ class SplashActivity : AppCompatActivity(R.layout.activity_splash) {
             .postDelayed(
                 {
                     val token = vm.getToken()
-                    Log.e("TOKEN",token.text)
-                    val hasToken = token.text.isNotEmpty()
+                    Log.e("TOKEN",token.token)
+                    val hasToken = token.token.isNotEmpty()
                     if (hasToken) {
                         val i = Intent(this, MainActivity::class.java)
                         startActivity(i)

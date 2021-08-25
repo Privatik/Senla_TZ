@@ -131,7 +131,7 @@ class ReminderFragment : Fragment(R.layout.fragment_reminder) {
         val intent = PendingIntent.getBroadcast(
             requireContext().applicationContext,
             id,
-            Intent(requireActivity(), ReminderBroadcast::class.java),
+            Intent(requireContext().applicationContext, ReminderBroadcast::class.java).putExtra("id",id),
             0
         )
 
@@ -157,7 +157,7 @@ class ReminderFragment : Fragment(R.layout.fragment_reminder) {
         val intent = PendingIntent.getBroadcast(
             requireContext().applicationContext,
             id,
-            Intent(requireActivity(), ReminderBroadcast::class.java),
+            Intent(requireContext().applicationContext, ReminderBroadcast::class.java),
             0
         )
 

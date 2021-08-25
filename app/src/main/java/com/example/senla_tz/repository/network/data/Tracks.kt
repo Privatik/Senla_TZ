@@ -16,7 +16,7 @@ data class TracksResponse(
 
 data class TrackResponse(
     @SerializedName("id")
-    var id: Long?,
+    var id: Long,
     @SerializedName("beginsAt")
     var beginsAt: Long,
     @SerializedName("time")
@@ -24,12 +24,50 @@ data class TrackResponse(
     @SerializedName("distance")
     var distance: Int,
     @SerializedName("points")
-    var points: List<Point>
+    var points: List<PointResponse>
 )
 
-data class Point(
+data class PointResponse(
     @SerializedName("lng")
     var lng: Double,
-    @SerializedName("distance")
+    @SerializedName("lat")
     var lat: Double
+)
+
+data class PointsResponse(
+    @SerializedName("status")
+    var status: Constant.StatusResponse?,
+    @SerializedName("points")
+    var points: List<PointResponse>,
+    @SerializedName("code")
+    var code: FailUserStatus?
+)
+
+data class SaveTrackResponse(
+    @SerializedName("status")
+    var status: Constant.StatusResponse?,
+    @SerializedName("id")
+    var id: Long,
+    @SerializedName("code")
+    var code: FailUserStatus?
+)
+
+data class SaveTrackRequest(
+    @SerializedName("token")
+    var token: String,
+    @SerializedName("beginsAt")
+    var beginsAt: Long,
+    @SerializedName("time")
+    var time: Long,
+    @SerializedName("distance")
+    var distance: Int,
+    @SerializedName("points")
+    var points: List<PointResponse>
+)
+
+data class PointsRequest(
+    @SerializedName("token")
+    var token: String,
+    @SerializedName("id")
+    var id: Long
 )

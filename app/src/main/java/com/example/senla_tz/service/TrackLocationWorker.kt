@@ -16,6 +16,7 @@ import androidx.work.impl.utils.futures.SettableFuture
 import com.example.senla_tz.repository.RunRepository
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.tasks.CancellationToken
 import com.google.common.util.concurrent.ListenableFuture
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -35,39 +36,40 @@ class TrackLocationWorker @AssistedInject constructor(
     @SuppressLint("RestrictedApi", "MissingPermission")
     override fun startWork(): ListenableFuture<Result> {
         mFuture = SettableFuture.create()
+        Log.e(TAG,"start work")
 
         LocationServices.getFusedLocationProviderClient(context).apply {
-            requestLocationUpdates( LocationRequest.create().apply {
-                interval = 5000
-                priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-                isWaitForAccurateLocation = true
-                maxWaitTime = 3000
-            },object : LocationCallback(){
-                override fun onLocationResult(result: LocationResult?) {
-                    Log.e(TAG,"init ")
-                    if (result == null) return
-                    repository.emitLocationFlow(result.locations)
-                    removeLocationUpdates(this)
+            lastLocation
+                .addOnSuccessListener {
+                    Log.e(TAG, "init")
+                    if (it != null) {
+                        LocationServices.getFusedLocationProviderClient(context)
+                        repository.emitLocationFlow(it)
+                    }
+                    getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, null)
+                    startNewWork()
+                }.addOnFailureListener {
+                    Log.e(TAG, "error ")
+                    startNewWork()
                 }
-            }, looper)
         }
-
-        val locationWorker =
-                OneTimeWorkRequestBuilder<TrackLocationWorker>()
-                    .addTag(LOCATION_WORK_TAG)
-                    .setInitialDelay(10,TimeUnit.SECONDS)
-                    .build()
-            WorkManager
-                .getInstance(context)
-                .enqueueUniqueWork(
-                    LOCATION_WORK_TAG,
-                    ExistingWorkPolicy.REPLACE,
-                    locationWorker
-                )
-
-            mFuture.set(Result.success())
-
+        mFuture.set(Result.success())
         return mFuture
+    }
+
+    fun startNewWork(){
+        val locationWorker =
+            OneTimeWorkRequestBuilder<TrackLocationWorker>()
+                .addTag(LOCATION_WORK_TAG)
+                .setInitialDelay(5,TimeUnit.SECONDS)
+                .build()
+        WorkManager
+            .getInstance(context)
+            .enqueueUniqueWork(
+                LOCATION_WORK_TAG,
+                ExistingWorkPolicy.REPLACE,
+                locationWorker
+            )
     }
 
     override fun onStopped() {

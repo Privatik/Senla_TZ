@@ -16,7 +16,7 @@ class TokenPref
     private val sp = context.getSharedPreferences(TOKEN, Context.MODE_PRIVATE)
 
     fun saveToken(token: Token){
-        sp.edit().putString(TOKEN, token.text).apply()
+        sp.edit().putString(TOKEN, token.token).apply()
     }
 
     fun getToken(): Token = Token(sp.getString(TOKEN, "") ?: "")

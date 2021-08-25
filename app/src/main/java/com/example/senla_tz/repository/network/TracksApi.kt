@@ -1,16 +1,18 @@
 package com.example.senla_tz.repository.network
 
-import com.example.senla_tz.repository.network.data.TracksResponse
+import com.example.senla_tz.entify.Token
+import com.example.senla_tz.repository.network.data.*
 import com.example.senla_tz.util.Constant
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface TracksApi {
 
-    @FormUrlEncoded
     @POST(Constant.ENDPOINT_TRACKS)
-    suspend fun getAllTracks(@Field("token") token: String): TracksResponse
+    suspend fun getAllTracks(@Body token: Token): TracksResponse
 
-    suspend fun saveTrack()
+    @POST(Constant.ENDPOINT_SAVE_TRACK)
+    suspend fun saveTrack(@Body request: SaveTrackRequest): SaveTrackResponse
+
+    @POST(Constant.ENDPOINT_POINTS_TRACK)
+    suspend fun pointsTrack(@Body request: PointsRequest): PointsResponse
 }

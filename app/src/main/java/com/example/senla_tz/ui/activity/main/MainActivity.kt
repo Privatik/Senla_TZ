@@ -1,6 +1,8 @@
 package com.example.senla_tz.ui.activity.main
 
+import android.content.Intent
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
@@ -12,6 +14,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.senla_tz.R
 import com.example.senla_tz.base.BaseActivity
 import com.example.senla_tz.databinding.ActivityMainBinding
+import com.example.senla_tz.ui.activity.auth.AuthActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -19,6 +22,8 @@ class MainActivity : BaseActivity(), IMainNavController {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private var binding: ActivityMainBinding? = null
+
+    private val vm: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +36,12 @@ class MainActivity : BaseActivity(), IMainNavController {
                 R.id.nav_main, R.id.nav_reminder
             ), binding?.drawerLayout
         )
+
+        binding?.exit?.setOnClickListener {
+            startActivity(Intent(this,AuthActivity::class.java))
+            vm.exit()
+            finish()
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

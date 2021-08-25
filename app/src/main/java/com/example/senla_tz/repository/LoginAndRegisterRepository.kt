@@ -25,7 +25,7 @@ class LoginAndRegisterRepository @Inject constructor(
             val res = service.register(request = request)
 
             if (res.status == Constant.StatusResponse.OK){
-                Token(text = res.token).also {
+                Token(token = res.token).also {
                     authorizationFlow.emit("Добро пожаловать ${request.firstName}")
                     tokenPref.saveToken(it)
                 }
@@ -35,7 +35,7 @@ class LoginAndRegisterRepository @Inject constructor(
 
         } catch (exception: Exception) {
             Log.e(TAG,exception.message?: exception.toString())
-            authorizationFailFlow.emit(Constant.errorFromService)
+            authorizationFailFlow.emit(Constant.ERROR_FROM_SERVICE)
         }
     }
 
@@ -44,7 +44,7 @@ class LoginAndRegisterRepository @Inject constructor(
             val res = service.login(request = request)
 
             if (res.status == Constant.StatusResponse.OK){
-                Token(text = res.token).also {
+                Token(token = res.token).also {
                     authorizationFlow.emit("Добро пожаловать ${res.firstName}")
                     tokenPref.saveToken(it)
                 }
@@ -54,7 +54,7 @@ class LoginAndRegisterRepository @Inject constructor(
 
         } catch (exception: Exception) {
             Log.e(TAG,exception.message?: exception.toString())
-            authorizationFailFlow.emit(Constant.errorFromService)
+            authorizationFailFlow.emit(Constant.ERROR_FROM_SERVICE)
         }
     }
 }

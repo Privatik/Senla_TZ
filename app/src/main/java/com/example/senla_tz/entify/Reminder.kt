@@ -12,7 +12,7 @@ import java.util.*
 @Entity
 @TypeConverters(CalendarTypeConverter::class)
 data class Reminder(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     var id: Int,
     var date: Calendar
 ){

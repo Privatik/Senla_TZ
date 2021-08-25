@@ -46,7 +46,7 @@ class ReminderDateDialog: DialogFragment(R.layout.dialog_reminder_date) {
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        dialog.window?.setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT)
         return dialog
     }
 
@@ -56,21 +56,10 @@ class ReminderDateDialog: DialogFragment(R.layout.dialog_reminder_date) {
         binding = DialogReminderDateBinding.bind(view)
 
         binding?.apply {
+            val adapterDayOfWeek = AdapterDayOfWeek()
+            recDayOfWeek.adapter = adapterDayOfWeek
+
             val calendar = Calendar.getInstance()
-            calendar.add(Calendar.HOUR_OF_DAY,2)
-
-            npDay.setValue(
-                min = calendar.getActualMinimum(Calendar.DAY_OF_MONTH),
-                max = calendar.getActualMaximum(Calendar.DAY_OF_MONTH),
-                current = calendar.get(Calendar.DAY_OF_MONTH)
-            )
-
-            npMonth.setValue(
-                min = calendar.get(Calendar.MONTH) + 1,
-                max = if (calendar.get(Calendar.MONTH) != 11) calendar.get(Calendar.MONTH) + 2
-                      else                                    1,
-                current = calendar.get(Calendar.MONTH) + 1
-            )
 
             npHour.setValue(
                 min = calendar.getActualMinimum(Calendar.HOUR_OF_DAY),
@@ -88,8 +77,7 @@ class ReminderDateDialog: DialogFragment(R.layout.dialog_reminder_date) {
                 calendar.changeDate(
                     hour = npHour.value,
                     minute = npMinute.value,
-                    day = npDay.value,
-                    month = npMonth.value - 1
+                    dayCount = adapterDayOfWeek.currentDay
                 )
 
                 callback?.createReminder(calendar = calendar)

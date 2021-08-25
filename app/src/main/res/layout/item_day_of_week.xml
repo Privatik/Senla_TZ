@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="model"
+            type="com.example.senla_tz.ui.dialog.DayOfWeek" />
+    </data>
+
+<androidx.appcompat.widget.AppCompatButton android:id="@+id/btnMonday"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:text = "Вт\n09/24"
+    app:isSelect="@{model.isSelected()}"
+    android:text="@{model.dayText}"
+    style="@style/ButtonDayOfWeek"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" />
+
+</layout>

@@ -4,6 +4,7 @@ import android.content.Context
 import com.example.senla_tz.repository.RunRepository
 import com.example.senla_tz.repository.database.TrackDao
 import com.example.senla_tz.repository.network.TracksApi
+import com.example.senla_tz.repository.pref.TokenPref
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,5 +21,6 @@ object RepositoryModule{
     fun runRepository(
         dao: TrackDao,
         service: TracksApi,
-    ) = RunRepository(dao, service)
+        tokenPref: TokenPref
+    ) = RunRepository(dao, service, tokenPref)
 }

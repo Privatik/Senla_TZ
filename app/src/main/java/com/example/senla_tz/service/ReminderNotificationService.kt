@@ -1,20 +1,17 @@
 package com.example.senla_tz.service
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.Service
+import android.app.*
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.core.app.JobIntentService
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationCompat.PRIORITY_MIN
+import androidx.core.app.NotificationCompat.PRIORITY_HIGH
 import com.example.senla_tz.R
+import com.example.senla_tz.ui.activity.run.RunActivity
+import com.example.senla_tz.util.Constant.FROM_SERVICE
 
 private const val channelId = "Reminder Channel"
 private const val channelName = "Reminder Name"
@@ -23,8 +20,14 @@ private const val REMINDER = "Напоминание"
 private val TAG = ReminderNotificationService::class.java.simpleName
 class ReminderNotificationService: Service() {
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        startForeground()
+    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+        Log.e(TAG,"${intent.action}")
+        if (intent.action != null && intent.action == FROM_SERVICE){
+            stopForeground(true)
+            stopSelf()
+        } else{
+            startForeground()
+        }
         Log.e(TAG,"onStart")
         return super.onStartCommand(intent, flags, startId)
     }
@@ -46,18 +49,26 @@ class ReminderNotificationService: Service() {
                ""
             }
 
+        val intent = PendingIntent.getActivity(
+            this,
+            0,
+            Intent(this, RunActivity::class.java).putExtra(FROM_SERVICE,true),
+            0
+        )
+
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
         val notification = notificationBuilder
             .setAutoCancel(true)
             .setSmallIcon(R.drawable.planet)
             .setContentTitle(TEXT_RUN)
             .setSubText(REMINDER)
-            .setPriority(PRIORITY_MIN)
+            .setPriority(PRIORITY_HIGH)
+            .setContentIntent(intent)
             .setCategory(Notification.CATEGORY_SERVICE)
             .build()
 
-        service.notify(101,notification)
-        //startForeground(101, notification)
+        //service.notify(101,notification)
+        startForeground(101, notification)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

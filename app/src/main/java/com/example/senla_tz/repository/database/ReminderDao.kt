@@ -15,4 +15,14 @@ interface ReminderDao {
 
     @Query("DELETE FROM Reminder WHERE id = :id")
     suspend fun deleteReminderById(id: Int)
+
+    @Query("DELETE FROM Reminder")
+    suspend fun deleteAll()
+
+    @Transaction
+    suspend fun getAndDeleteAll(): List<Reminder>{
+        val list = getAllReminder()
+        deleteAll()
+        return list
+    }
 }

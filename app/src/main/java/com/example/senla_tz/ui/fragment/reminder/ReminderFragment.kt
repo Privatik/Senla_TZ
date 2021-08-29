@@ -126,6 +126,7 @@ class ReminderFragment : Fragment(R.layout.fragment_reminder) {
 
     override fun onDestroyView() {
         binding = null
+        adapterReminder = null
         super.onDestroyView()
     }
 }

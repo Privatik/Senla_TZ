@@ -10,50 +10,29 @@ import com.example.senla_tz.repository.network.data.PointsRequest
 import com.example.senla_tz.repository.network.data.SaveTrackRequest
 import com.example.senla_tz.repository.pref.TokenPref
 import com.example.senla_tz.util.Constant
-import com.example.senla_tz.util.Constant.ERROR_FROM_SERVICE
+import com.example.senla_tz.util.Constant.ERROR_FROM_SERVER
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
 import java.lang.Exception
 import java.net.ConnectException
+import javax.inject.Inject
 
 
 private val TAG = RunRepository::class.java.simpleName
 private const val NO_NETWORK = "Нет сети"
-class RunRepository constructor(
+class RunRepository @Inject constructor(
     private val dao: TrackDao,
     private val service: TracksApi,
     private val tokenPref: TokenPref
 ) {
 
-    val locationFlow = MutableSharedFlow<List<LatLng>>(replay = 1)
-
     val pointCurrentFlow = MutableSharedFlow<List<LatLng>>()
     val trackFailFlow = MutableSharedFlow<String>()
 
-    private val listLatLng = mutableListOf<LatLng>()
-
-    fun emitLocationFlow(location: Location) {
-        Log.e(TAG,"new points")
-        val latLng = LatLng(location.latitude, location.longitude)
-
-        if (latLng != listLatLng.lastOrNull()) listLatLng.add(latLng)
-
-        CoroutineScope(Dispatchers.Default).launch {
-            locationFlow.emit(listLatLng)
-        }
-    }
-
-    fun updateState(latLng: LatLng?){
-        listLatLng.clear()
-        if (latLng != null) {
-            listLatLng.add(latLng)
-        }
-    }
 
     suspend fun getPoints(id: Long){
         try {
-
             val request = PointsRequest(
                 id = id,
                 token = tokenPref.getToken().token
@@ -76,7 +55,7 @@ class RunRepository constructor(
             trackFailFlow.emit(NO_NETWORK)
         }catch (e: Exception){
             Log.e(TAG, e.message.toString())
-            trackFailFlow.emit(ERROR_FROM_SERVICE)
+            trackFailFlow.emit(ERROR_FROM_SERVER)
         }
     }
 
@@ -94,19 +73,26 @@ class RunRepository constructor(
 
             if (res.status == Constant.StatusResponse.OK){
                 track.idServer = res.id
-                dao.saveTrack(track)
             } else{
                 track.isHasService = false
                 dao.saveTrack(track)
                 trackFailFlow.emit(res.code!!.text)
             }
 
+            val id = dao.saveTrack(track)
+            track.points.forEach {
+                it.idTrack = id
+            }
+
+            dao.savePoints(track.points)
+
+
         }catch (e: ConnectException){
             Log.e(TAG, e.message.toString())
             trackFailFlow.emit(NO_NETWORK)
         }catch (e: Exception){
             Log.e(TAG, e.message.toString())
-            trackFailFlow.emit(ERROR_FROM_SERVICE)
+            trackFailFlow.emit(ERROR_FROM_SERVER)
         }
     }
 

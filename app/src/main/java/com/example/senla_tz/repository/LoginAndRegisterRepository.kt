@@ -35,7 +35,7 @@ class LoginAndRegisterRepository @Inject constructor(
 
         } catch (exception: Exception) {
             Log.e(TAG,exception.message?: exception.toString())
-            authorizationFailFlow.emit(Constant.ERROR_FROM_SERVICE)
+            authorizationFailFlow.emit(Constant.ERROR_FROM_SERVER)
         }
     }
 
@@ -54,7 +54,7 @@ class LoginAndRegisterRepository @Inject constructor(
 
         } catch (exception: Exception) {
             Log.e(TAG,exception.message?: exception.toString())
-            authorizationFailFlow.emit(Constant.ERROR_FROM_SERVICE)
+            authorizationFailFlow.emit(Constant.ERROR_FROM_SERVER)
         }
     }
 }

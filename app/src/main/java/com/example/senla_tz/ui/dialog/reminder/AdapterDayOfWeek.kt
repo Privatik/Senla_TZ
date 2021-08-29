@@ -1,16 +1,15 @@
-package com.example.senla_tz.ui.dialog
+package com.example.senla_tz.ui.dialog.reminder
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.ObservableBoolean
 import androidx.recyclerview.widget.RecyclerView
-import com.example.senla_tz.bind_adapter.isSelect
 import com.example.senla_tz.databinding.ItemDayOfWeekBinding
 import com.example.senla_tz.util.extends.getDayAndMonth
 import com.example.senla_tz.util.extends.getRussianShortDayOFWeek
 import java.util.*
 
-class AdapterDayOfWeek(): RecyclerView.Adapter<AdapterDayOfWeek.DayViewHolder>() {
+class AdapterDayOfWeek: RecyclerView.Adapter<AdapterDayOfWeek.DayViewHolder>() {
 
     private val listDay: List<DayOfWeek> = Calendar.getInstance().getCurrentWeekWithCurrentDay()
     var currentDay = 0
@@ -44,7 +43,8 @@ class AdapterDayOfWeek(): RecyclerView.Adapter<AdapterDayOfWeek.DayViewHolder>()
     private fun Calendar.getCurrentWeekWithCurrentDay(): List<DayOfWeek>{
         val listDay: MutableList<DayOfWeek> = mutableListOf()
 
-        listDay.add(DayOfWeek(
+        listDay.add(
+            DayOfWeek(
             "${getRussianShortDayOFWeek(get(Calendar.DAY_OF_WEEK))}\n${getDayAndMonth()}").also {
                 it.isSelected.set(true)
         })

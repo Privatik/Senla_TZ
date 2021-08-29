@@ -1,4 +1,4 @@
-package com.example.senla_tz.ui.dialog
+package com.example.senla_tz.ui.dialog.load
 
 import android.app.Dialog
 import android.os.Bundle

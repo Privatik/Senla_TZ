@@ -19,7 +19,7 @@ class Timer() {
 
         timer.schedule(object : TimerTask(){
             override fun run() {
-                milliseconds += 12
+                milliseconds += 11
                 update(milliseconds)
             }
 

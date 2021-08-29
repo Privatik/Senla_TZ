@@ -4,6 +4,7 @@ import com.example.senla_tz.entify.Reminder
 import com.example.senla_tz.repository.database.ReminderDao
 import dagger.hilt.android.scopes.ActivityScoped
 import kotlinx.coroutines.flow.MutableSharedFlow
+import java.util.*
 import javax.inject.Inject
 
 class ReminderRepository @Inject constructor(
@@ -14,7 +15,7 @@ class ReminderRepository @Inject constructor(
     val reminderFlow = MutableSharedFlow<Reminder>()
 
     suspend fun getAllReminder(){
-       remindersFlow.emit(dao.getAllReminder().sortedBy { it.date.timeInMillis }.toMutableList())
+       remindersFlow.emit(dao.getActualAllReminder(Calendar.getInstance()).sortedBy { it.date.timeInMillis }.toMutableList())
     }
 
     suspend fun saveReminder(reminder: Reminder) {

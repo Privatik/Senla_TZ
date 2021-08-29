@@ -20,7 +20,7 @@ data class Track(
     var idServer: Long,
     var beginsAt: Long,
     var time: Long,
-    var distance: Int,
+    var distance: Long,
     var isHasService: Boolean = true
 ): Parcelable{
     @Ignore
@@ -48,6 +48,7 @@ data class Track(
 data class Point(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0L,
+    var idTrack: Long = 0L,
     var lng: Double,
     var lat: Double
 )

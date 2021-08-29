@@ -2,7 +2,7 @@ package com.example.senla_tz.base
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
-import com.example.senla_tz.ui.dialog.LoadDialog
+import com.example.senla_tz.ui.dialog.load.LoadDialog
 
 private const val LOAD = "load"
 open class BaseActivity: AppCompatActivity() {

@@ -22,7 +22,7 @@ data class TrackResponse(
     @SerializedName("time")
     var time: Long,
     @SerializedName("distance")
-    var distance: Int,
+    var distance: Long,
     @SerializedName("points")
     var points: List<PointResponse>
 )
@@ -60,7 +60,7 @@ data class SaveTrackRequest(
     @SerializedName("time")
     var time: Long,
     @SerializedName("distance")
-    var distance: Int,
+    var distance: Long,
     @SerializedName("points")
     var points: List<PointResponse>
 )

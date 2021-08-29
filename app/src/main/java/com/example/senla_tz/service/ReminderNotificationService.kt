@@ -51,7 +51,7 @@ class ReminderNotificationService: Service() {
 
         val intent = PendingIntent.getActivity(
             this,
-            0,
+            1,
             Intent(this, RunActivity::class.java).putExtra(FROM_SERVICE,true),
             0
         )
@@ -64,11 +64,10 @@ class ReminderNotificationService: Service() {
             .setSubText(REMINDER)
             .setPriority(PRIORITY_HIGH)
             .setContentIntent(intent)
-            .setCategory(Notification.CATEGORY_SERVICE)
             .build()
 
         //service.notify(101,notification)
-        startForeground(101, notification)
+        startForeground(100, notification)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -76,7 +75,7 @@ class ReminderNotificationService: Service() {
         NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH).also {
             it.lightColor = getColor(R.color.purple_700)
             it.importance = NotificationManager.IMPORTANCE_NONE
-            it.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+            it.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             it.enableVibration(true)
             service.createNotificationChannel(it)
         }

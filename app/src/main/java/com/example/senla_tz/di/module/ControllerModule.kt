@@ -1,6 +1,7 @@
 package com.example.senla_tz.di.module
 
 import android.content.Context
+import com.example.senla_tz.controller.RunController
 import com.example.senla_tz.repository.RunRepository
 import com.example.senla_tz.repository.database.TrackDao
 import com.example.senla_tz.repository.network.TracksApi
@@ -14,13 +15,9 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object RepositoryModule{
+object ControllerModule{
 
     @Singleton
     @Provides
-    fun runRepository(
-        dao: TrackDao,
-        service: TracksApi,
-        tokenPref: TokenPref
-    ) = RunRepository(dao, service, tokenPref)
+    fun provideRunController() = RunController()
 }

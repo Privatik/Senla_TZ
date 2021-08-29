@@ -6,7 +6,6 @@ import com.example.senla_tz.repository.database.TrackDao
 import com.example.senla_tz.repository.network.TracksApi
 import com.example.senla_tz.repository.network.data.PointResponse
 import com.example.senla_tz.repository.network.data.SaveTrackRequest
-import com.example.senla_tz.repository.network.data.TrackResponse
 import com.example.senla_tz.repository.pref.TokenPref
 import com.example.senla_tz.util.Constant
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -20,8 +19,8 @@ class TracksRepository @Inject constructor(
     private var pref: TokenPref
 ) {
 
-    val tracksFlow = MutableSharedFlow<List<Track>>()
-    val tracksFailFlow = MutableSharedFlow<String>()
+    val tracksFlow = MutableSharedFlow<List<Track>>(replay = 1)
+    val tracksFailFlow = MutableSharedFlow<String>(replay = 1)
 
     suspend fun getTracks(){
         try {
@@ -54,7 +53,7 @@ class TracksRepository @Inject constructor(
 
         }catch (e: Exception){
             Log.e(TAG,e.message?: e.toString())
-            tracksFailFlow.emit(Constant.ERROR_FROM_SERVICE)
+            tracksFailFlow.emit(Constant.ERROR_FROM_SERVER)
         }
     }
 
@@ -68,7 +67,7 @@ class TracksRepository @Inject constructor(
                     beginsAt = track.beginsAt,
                     time = track.time,
                     distance = track.distance,
-                    points = track.points.map { PointResponse(it.lng, it.lat) }
+                    points = dao.getPointById(track.id).map { PointResponse(it.lng, it.lat) }
                 )
 
                 val res = service.saveTrack(request)

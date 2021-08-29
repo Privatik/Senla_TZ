@@ -4,7 +4,7 @@
         <import type="android.view.View" />
         <variable
             name="model"
-            type="com.example.senla_tz.ui.dialog.DayOfWeek" />
+            type="com.example.senla_tz.ui.dialog.reminder.DayOfWeek" />
     </data>
 
 <androidx.appcompat.widget.AppCompatButton android:id="@+id/btnMonday"

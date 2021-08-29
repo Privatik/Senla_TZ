@@ -44,7 +44,7 @@
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="30dp"
             android:src="@drawable/ic_add"
-            app:layout_behavior = "com.example.senla_tz.ui.fragment.main.FabFloatOnScroll"
+            app:layout_behavior = "com.example.senla_tz.util.resourse.FabFloatOnScroll"
             android:layout_marginBottom="50dp"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

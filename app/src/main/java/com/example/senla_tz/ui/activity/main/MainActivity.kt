@@ -38,8 +38,8 @@ class MainActivity : BaseActivity(), IMainNavController {
         )
 
         binding?.exit?.setOnClickListener {
-            startActivity(Intent(this,AuthActivity::class.java))
             vm.exit()
+            startActivity(Intent(this,AuthActivity::class.java))
             finish()
         }
     }

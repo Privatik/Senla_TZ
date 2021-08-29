@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -13,7 +12,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.example.senla_tz.R
 import com.example.senla_tz.databinding.FragmentLoginAndRegisterBinding
 import com.example.senla_tz.ui.activity.main.MainActivity
-import com.example.senla_tz.ui.dialog.LoadDialog
 import com.example.senla_tz.util.extends.closeLoadDialog
 import com.example.senla_tz.util.extends.openLoadDialog
 import com.example.senla_tz.util.extends.showSnackBar
@@ -35,7 +33,6 @@ class LoginAndRegisterFragment : Fragment(R.layout.fragment_login_and_register) 
         binding = FragmentLoginAndRegisterBinding.bind(view).also {
             it.viewModel = vm
         }
-
 
         initListener()
         intiObserver()

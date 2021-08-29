@@ -1,4 +1,4 @@
-package com.example.senla_tz.ui.fragment.main
+package com.example.senla_tz.util.resourse
 
 import android.content.Context
 import android.util.AttributeSet

@@ -15,10 +15,11 @@ object Constant {
     const val ENDPOINT_SAVE_TRACK = "senla-training-addition/lesson-26.php?method=save"
 
     const val FROM_SERVICE = "FromService"
+    const val FROM_WORKMANAGER = "FromWorkmanager"
     const val VIEW_OLD_TRACK = "ViewOldTrack"
     const val TRACK = "Track"
 
-    const val ERROR_FROM_SERVICE = "Что-то пошло не так.."
+    const val ERROR_FROM_SERVER = "Что-то пошло не так.."
 
     const val BASE_NAME = "TRACK_DATABASE"
 

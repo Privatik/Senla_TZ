@@ -1,4 +1,4 @@
-package com.example.senla_tz.ui.dialog
+package com.example.senla_tz.ui.dialog.reminder
 
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -34,10 +34,14 @@ class ReminderDateDialog: DialogFragment(R.layout.dialog_reminder_date) {
 
     companion object{
         private const val IS_FIRST_START = "IsFirstStart"
+        private const val DATE_REMINDER = "DateReminder"
 
-        fun newInstance(isFirstStart: Boolean): ReminderDateDialog =
+        fun newInstance(isFirstStart: Boolean, calendar: Calendar): ReminderDateDialog =
             ReminderDateDialog().apply {
-                arguments = bundleOf(IS_FIRST_START to isFirstStart)
+                arguments = bundleOf(
+                    IS_FIRST_START to isFirstStart,
+                    DATE_REMINDER to calendar
+                )
             }
     }
 
@@ -59,29 +63,29 @@ class ReminderDateDialog: DialogFragment(R.layout.dialog_reminder_date) {
             val adapterDayOfWeek = AdapterDayOfWeek()
             recDayOfWeek.adapter = adapterDayOfWeek
 
-            val calendar = Calendar.getInstance()
-
-            npHour.setValue(
-                min = calendar.getActualMinimum(Calendar.HOUR_OF_DAY),
-                max = calendar.getActualMaximum(Calendar.HOUR_OF_DAY),
-                current = calendar.get(Calendar.HOUR_OF_DAY)
-            )
-
-            npMinute.setValue(
-                min = calendar.getActualMinimum(Calendar.MINUTE),
-                max = calendar.getActualMaximum(Calendar.MINUTE),
-                current = calendar.get(Calendar.MINUTE)
-            )
-
-            btnCreate.setOnClickListener {
-                calendar.changeDate(
-                    hour = npHour.value,
-                    minute = npMinute.value,
-                    dayCount = adapterDayOfWeek.currentDay
+            (requireArguments().getSerializable(DATE_REMINDER) as? Calendar)?.let { calendar ->
+                npHour.setValue(
+                    min = calendar.getActualMinimum(Calendar.HOUR_OF_DAY),
+                    max = calendar.getActualMaximum(Calendar.HOUR_OF_DAY),
+                    current = calendar.get(Calendar.HOUR_OF_DAY)
                 )
 
-                callback?.createReminder(calendar = calendar)
-                dismiss()
+                npMinute.setValue(
+                    min = calendar.getActualMinimum(Calendar.MINUTE),
+                    max = calendar.getActualMaximum(Calendar.MINUTE),
+                    current = calendar.get(Calendar.MINUTE)
+                )
+
+                btnCreate.setOnClickListener {
+                    calendar.changeDate(
+                        hour = npHour.value,
+                        minute = npMinute.value,
+                        dayCount = adapterDayOfWeek.currentDay
+                    )
+
+                    callback?.createReminder(calendar = calendar)
+                    dismiss()
+                }
             }
 
             btnCancel.setOnClickListener {
